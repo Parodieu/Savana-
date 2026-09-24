@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Savana — Restaurant Africain</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --gold: #C9922A;
+    --dark: #0D0A07;
+    --cream: #F5EFE0;
+    --brown: #3B2A1A;
+    --accent: #E85D26;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--dark);
+    color: var(--cream);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transition: all 0.3s ease;
+    transform: translate(-50%, -50%);
+    opacity: 0.5;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 100;
+    padding: 24px 60px;
+    display: flex; justify-content: space-between; align-items: center;
+    background: linear-gradient(to bottom, rgba(13,10,7,0.95), transparent);
+  }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px; font-weight: 900;
+    color: var(--gold);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+  .nav-links { display: flex; gap: 40px; list-style: none; }
+  .nav-links a {
+    color: var(--cream); text-decoration: none;
+    font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+    font-weight: 500; opacity: 0.8;
+    transition: opacity 0.3s, color 0.3s;
+  }
+  .nav-links a:hover { opacity: 1; color: var(--gold); }
+
+  /* HERO */
+  .hero {
+    height: 100vh;
+    position: relative;
+    display: flex; align-items: center;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 70% 50%, rgba(201,146,42,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse at 20% 80%, rgba(232,93,38,0.1) 0%, transparent 50%),
+      linear-gradient(135deg, #0D0A07 0%, #1a1008 50%, #0D0A07 100%);
+  }
+  .hero-texture {
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9922A' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  .hero-content {
+    position: relative; z-index: 2;
+    padding: 0 60px;
+    max-width: 700px;
+  }
+  .hero-tag {
+    display: inline-block;
+    font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--gold); border: 1px solid rgba(201,146,42,0.4);
+    padding: 6px 16px; border-radius: 20px;
+    margin-bottom: 32px;
+    animation: fadeUp 0.8s ease both;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(56px, 8vw, 96px);
+    font-weight: 900; line-height: 0.95;
+    margin-bottom: 28px;
+    animation: fadeUp 0.8s 0.15s ease both;
+  }
+  .hero h1 em {
+    font-style: italic; color: var(--gold);
+    display: block;
+  }
+  .hero p {
+    font-size: 17px; line-height: 1.7;
+    opacity: 0.7; max-width: 420px;
+    margin-bottom: 48px;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+  .hero-btns {
+    display: flex; gap: 20px; flex-wrap: wrap;
+    animation: fadeUp 0.8s 0.45s ease both;
+  }
+  .btn-primary {
+    background: var(--gold); color: var(--dark);
+    padding: 16px 36px; border: none; border-radius: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+    font-weight: 500; cursor: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(201,146,42,0.4);
+  }
+  .btn-secondary {
+    background: transparent; color: var(--cream);
+    padding: 16px 36px; border: 1px solid rgba(245,239,224,0.3); border-radius: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+    font-weight: 500; cursor: none;
+    transition: border-color 0.2s, color 0.2s;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* Floating dish */
+  .hero-visual {
+    position: absolute; right: 60px; top: 50%;
+    transform: translateY(-50%);
+    width: 420px; height: 420px;
+    animation: float 6s ease-in-out infinite;
+  }
+  .dish-circle {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgba(201,146,42,0.2), rgba(201,146,42,0.05));
+    border: 1px solid rgba(201,146,42,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 120px;
+    position: relative;
+  }
+  .dish-circle::before {
+    content: '';
+    position: absolute; inset: -20px;
+    border-radius: 50%;
+    border: 1px dashed rgba(201,146,42,0.15);
+    animation: spin 20s linear infinite;
+  }
+
+  /* STATS */
+  .stats {
+    display: flex; gap: 0;
+    border-top: 1px solid rgba(245,239,224,0.1);
+    border-bottom: 1px solid rgba(245,239,224,0.1);
+  }
+  .stat {
+    flex: 1; padding: 48px 60px;
+    border-right: 1px solid rgba(245,239,224,0.1);
+    transition: background 0.3s;
+  }
+  .stat:last-child { border-right: none; }
+  .stat:hover { background: rgba(201,146,42,0.05); }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 52px; font-weight: 900; color: var(--gold);
+    line-height: 1;
+  }
+  .stat-label { font-size: 13px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.5; margin-top: 8px; }
+
+  /* MENU */
+  .section { padding: 120px 60px; }
+  .section-header { margin-bottom: 80px; }
+  .section-tag {
+    font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 16px; display: block;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 5vw, 60px); font-weight: 900;
+    line-height: 1.1;
+  }
+
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  .menu-item {
+    background: rgba(245,239,224,0.03);
+    padding: 48px 40px;
+    border: 1px solid rgba(245,239,224,0.06);
+    transition: all 0.4s ease;
+    position: relative; overflow: hidden;
+  }
+  .menu-item::before {
+    content: '';
+    position: absolute; bottom: 0; left: 0;
+    width: 100%; height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+  }
+  .menu-item:hover { background: rgba(201,146,42,0.07); transform: translateY(-4px); }
+  .menu-item:hover::before { transform: scaleX(1); }
+  .menu-emoji { font-size: 48px; margin-bottom: 24px; display: block; }
+  .menu-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .menu-desc { font-size: 14px; opacity: 0.6; line-height: 1.6; margin-bottom: 24px; }
+  .menu-price { font-size: 24px; color: var(--gold); font-weight: 500; }
+
+  /* RESERVATION */
+  .reservation {
+    background: linear-gradient(135deg, rgba(201,146,42,0.1), rgba(232,93,38,0.05));
+    border: 1px solid rgba(201,146,42,0.2);
+    border-radius: 8px;
+    padding: 80px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+    align-items: center;
+    margin: 0 60px 120px;
+  }
+  .res-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px; font-weight: 900; line-height: 1.1;
+    margin-bottom: 20px;
+  }
+  .res-sub { opacity: 0.6; line-height: 1.7; }
+  .res-form { display: flex; flex-direction: column; gap: 16px; }
+  .res-form input, .res-form select {
+    background: rgba(245,239,224,0.05);
+    border: 1px solid rgba(245,239,224,0.15);
+    color: var(--cream); padding: 16px 20px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px;
+    border-radius: 4px; outline: none;
+    transition: border-color 0.3s;
+  }
+  .res-form input:focus, .res-form select:focus { border-color: var(--gold); }
+  .res-form select option { background: var(--dark); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid rgba(245,239,224,0.1);
+    padding: 60px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px; font-weight: 900; color: var(--gold); letter-spacing: 4px;
+  }
+  .footer-text { opacity: 0.4; font-size: 13px; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(-50%) translateX(0); }
+    50% { transform: translateY(-53%) translateX(-10px); }
+  }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* Scroll reveal */
+  .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <div class="logo">Savana</div>
+  <ul class="nav-links">
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#reservation">Réserver</a></li>
+    <li><a href="#">À propos</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-texture"></div>
+  <div class="hero-content">
+    <span class="hero-tag">✦ Kinshasa, RDC · Depuis 2018</span>
+    <h1>L'Afrique dans <em>chaque assiette</em></h1>
+    <p>Une expérience culinaire authentique qui célèbre les saveurs riches et généreuses de la cuisine africaine traditionnelle.</p>
+    <div class="hero-btns">
+      <a href="#menu" class="btn-primary">Voir le menu</a>
+      <a href="#reservation" class="btn-secondary">Réserver une table</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="dish-circle">🍲</div>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="stat reveal">
+    <div class="stat-num">12+</div>
+    <div class="stat-label">Années d'expérience</div>
+  </div>
+  <div class="stat reveal">
+    <div class="stat-num">48</div>
+    <div class="stat-label">Plats au menu</div>
+  </div>
+  <div class="stat reveal">
+    <div class="stat-num">5K+</div>
+    <div class="stat-label">Clients satisfaits</div>
+  </div>
+  <div class="stat reveal">
+    <div class="stat-num">3</div>
+    <div class="stat-label">Récompenses</div>
+  </div>
+</div>
+
+<section class="section" id="menu">
+  <div class="section-header reveal">
+    <span class="section-tag">✦ Notre sélection</span>
+    <h2 class="section-title">Les plats<br><em style="font-style:italic;color:var(--gold)">incontournables</em></h2>
+  </div>
+  <div class="menu-grid">
+    <div class="menu-item reveal">
+      <span class="menu-emoji">🍗</span>
+      <div class="menu-name">Poulet Moyo</div>
+      <div class="menu-desc">Poulet mijoté dans un mayo, épices locales et légumes frais.</div>
+      <div class="menu-price">12 $</div>
+    </div>
+    <div class="menu-item reveal">
+      <span class="menu-emoji">🐟</span>
+      <div class="menu-name">Poisson Braisé</div>
+      <div class="menu-desc">Tilapia du fleuve Congo grillé au feu de bois, servi avec du pondu et du foufou.</div>
+      <div class="menu-price">15 $</div>
+    </div>
+    <div class="menu-item reveal">
+      <span class="menu-emoji">🥘</span>
+      <div class="menu-name">Maboke</div>
+      <div class="menu-desc">Poisson enveloppé dans des feuilles de bananier et cuit à la vapeur avec des épices.</div>
+      <div class="menu-price">14 $</div>
+    </div>
+    <div class="menu-item reveal">
+      <span class="menu-emoji">🫘</span>
+      <div class="menu-name">Ntaba ya Madesu</div>
+      <div class="menu-desc">Chèvre mijotée aux haricots rouges, oignons caramélisés et tomates fraîches.</div>
+      <div class="menu-price">18 $</div>
+    </div>
+    <div class="menu-item reveal">
+      <span class="menu-emoji">🌿</span>
+      <div class="menu-name">Pondu Spécial</div>
+      <div class="menu-desc">Feuilles de manioc pilées, cuites avec du poisson fumé, ail et huile de palme.</div>
+      <div class="menu-price">10 $</div>
+    </div>
+    <div class="menu-item reveal">
+      <span class="menu-emoji">🍌</span>
+      <div class="menu-name">Liboke </div>
+      <div class="menu-desc">lboko ya ntaba ou poisson .</div>
+      <div class="menu-price">7 $</div>
+    </div>
+  </div>
+</section>
+
+<div class="reservation reveal" id="reservation">
+  <div>
+    <div class="res-title">Réservez votre <em style="font-style:italic;color:var(--gold)">table</em></div>
+    <p class="res-sub">Offrez-vous une soirée inoubliable. Réservez en ligne et bénéficiez d'un accueil privilégié dès votre arrivée.</p>
+  </div>
+  <div class="res-form">
+    <input type="text" placeholder="Votre nom complet">
+    <input type="tel" placeholder="Votre numéro de téléphone">
+    <input type="date">
+    <select>
+      <option>Nombre de personnes</option>
+      <option>1-2 personnes</option>
+      <option>3-4 personnes</option>
+      <option>5-8 personnes</option>
+      <option>Groupe (9+)</option>
+    </select>
+    <button class="btn-primary" style="border:none;">Confirmer la réservation →</button>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">SAVANA</div>
+  <div class="footer-text">© 2026 Savana Restaurant · Kinshasa, RDC</div>
+  <div class="footer-text">+243 983 894 164</div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    setTimeout(() => {
+      ring.style.left = e.clientX + 'px';
+      ring.style.top = e.clientY + 'px';
+    }, 80);
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 100);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
